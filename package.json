@@ -1,0 +1,19 @@
+{
+  "name": "shoppingapp-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/owennguyen3162/Shopping-app-BE.git"
+  },
+  "author": "nguyen tuan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/owennguyen3162/Shopping-app-BE/issues"
+  },
+  "homepage": "https://github.com/owennguyen3162/Shopping-app-BE#readme"
+}
