@@ -1,25 +1,30 @@
 const connection = require("../config/configDB");
 
-const getAllProduct = async (req, res) => {
-  const query = "SELECT * FROM Product";
+const getProductByCategory = async (req, res) => {
+  const category = await req.params.category;
+  const query = "SELECT * FROM Product WHERE category = ?";
+
   try {
-    const [data] = await connection.execute(query);
-    return res.status(200).json({ data });
+    const [data] = await connection.execute(query, [category]);
+    const dataNew = data.map((item) => {
+      return { ...item, image: "http://192.168.0.101:3000/" + item.image };
+    });
+    return res.status(200).json({ data: dataNew });
   } catch (error) {
     return res.status(500).json({ error });
   }
 };
 
 const addProduct = async (req, res) => {
-  const { name, price, quantity, category } = await req.body;
+  const { name, price, quantity, category, description } = await req.body;
   let image;
   if (req.file) {
     image = req.file.filename;
   }
-  if (!name || !price || !quantity || !category) {
+  if (!name || !price || !quantity || !category || !description) {
     return res.status(500).json({ msg: "empty value" });
   }
-  const query = "INSERT INTO Product VALUES (?,?,?,?,?,?)";
+  const query = "INSERT INTO Product VALUES (?,?,?,?,?,?,?,?)";
   try {
     await connection.execute(query, [
       null,
@@ -28,6 +33,8 @@ const addProduct = async (req, res) => {
       price,
       quantity,
       category,
+      description,
+      null,
     ]);
     return res.status(201).json({ msg: "product created !!!" });
   } catch (error) {
@@ -35,4 +42,36 @@ const addProduct = async (req, res) => {
   }
 };
 
-module.exports = { getAllProduct, addProduct };
+const getNewArrivals = async (req, res) => {
+  const query =
+    "SELECT * FROM product WHERE time > date_sub(now(), interval 1 day)"; // lay cac san pham duoc tao 1 ngay truoc
+  try {
+    const [data] = await connection.execute(query);
+    const dataNew = data.map((item) => {
+      return { ...item, image: "http://192.168.0.101:3000/" + item.image };
+    });
+    return res.status(200).json({ data: dataNew });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+};
+
+const getBestSelling = async (req, res) => {
+  const query = "SELECT * FROM product WHERE quantity > 10";
+  try {
+    const [data] = await connection.execute(query);
+    const dataNew = data.map((item) => {
+      return { ...item, image: "http://192.168.0.101:3000/" + item.image };
+    });
+    return res.status(200).json({ data: dataNew });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+};
+
+module.exports = {
+  getProductByCategory,
+  addProduct,
+  getNewArrivals,
+  getBestSelling,
+};
