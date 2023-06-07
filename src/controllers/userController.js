@@ -3,8 +3,8 @@ const connect = require("../config/configDB");
 const authMethod = require("../auth/auth.methods");
 const randToken = require("rand-token");
 const createAccount = async (req, res) => {
-  let { name, address, phone, password } = await req.body;
-  if (!name || !address || !password || !phone) {
+  let { name, phone, password } = await req.body;
+  if (!name || !password || !phone) {
     return res.status(404).json({ msg: "Data empty" });
   }
   const query = "INSERT INTO user VALUES (?,?,?,?,?,?,?)";
@@ -16,7 +16,7 @@ const createAccount = async (req, res) => {
       null,
       phone,
       name,
-      address,
+      "",
       password,
       "",
       "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg",
@@ -34,11 +34,11 @@ const login = async (req, res) => {
   try {
     let [data] = await connect.execute(query, [phone]);
     if (data.length === 0) {
-      res.status(404).json({ msg: "not found" });
+      return res.status(404).json({ msg: "not found" });
     }
     let checkPass = bcrypt.compareSync(password, data[0].password);
     if (!checkPass) {
-      res.status(404).json({ msg: "wrong password" });
+      return res.status(404).json({ msg: "wrong password" });
     }
     const accessTokenSecret =
       process.env.ACCESS_TOKEN_SECRET || jwtVariable.accessTokenSecret;
@@ -57,13 +57,12 @@ const login = async (req, res) => {
     let refreshToken = randToken.generate(120);
     data[0].accessToken = accessToken;
     data[0].refreshToken = refreshToken;
-
     return res.status(200).json({
       msg: "login successfully",
-      data,
+      data: data[0],
     });
   } catch (error) {
-    res.status(500).json({ msg: "login fail" });
+    return res.status(500).json({ msg: "login fail" });
   }
 };
 
