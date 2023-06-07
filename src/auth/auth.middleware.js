@@ -19,10 +19,12 @@ exports.isAuth = async (req, res, next) => {
   }
   const query = "SELECT * FROM user WHERE phone = ?";
   try {
-    let [data] = connect.execute(query, [verified.payload.phone]);
-    req.user = data[0];
+    let [data] = await connect.execute(query, [verified.payload.phone]);
+    if (data.length !== 0) {
+      req.user = data[0];
+    }
   } catch (error) {
-    console.log("auth error");
+    console.log("auth error " + error);
   }
   return next();
 };
