@@ -47,10 +47,22 @@ const getNewArrivals = async (req, res) => {
     "SELECT * FROM product WHERE time > date_sub(now(), interval 1 day)"; // lay cac san pham duoc tao 1 ngay truoc
   try {
     const [data] = await connection.execute(query);
-    const dataNew = data.map((item) => {
-      return { ...item, image: "http://192.168.0.101:3000/" + item.image };
-    });
-    return res.status(200).json({ data: dataNew });
+    if (data.length !== 0) {
+      const dataNew = data.map((item) => {
+        return { ...item, image: "http://192.168.0.101:3000/" + item.image };
+      });
+      return res.status(200).json({ data: dataNew });
+    } else {
+      const query =
+        "SELECT * FROM product WHERE time > date_sub(now(), interval 1 month)"; // lay cac san pham duoc tao 1 ngay truoc
+      const [data] = await connection.execute(query);
+      if (data.length !== 0) {
+        const dataNew = data.map((item) => {
+          return { ...item, image: "http://192.168.0.101:3000/" + item.image };
+        });
+        return res.status(200).json({ data: dataNew });
+      }
+    }
   } catch (error) {
     return res.status(500).json({ error });
   }
