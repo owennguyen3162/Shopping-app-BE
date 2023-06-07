@@ -66,11 +66,11 @@ const checkout = async (req, res) => {
   const queryUpdateCartItem = "UPDATE cart SET checkout = ? WHERE id = ?";
 
   try {
-    let [data] = await connect.execute(query, [userId, 0]);
+    let [data] = await connect.execute(query, [userId, 0]); // get data in cart now
     let dataNew = await data.map((item) => {
       return {
         ...item,
-        image: "http://192.168.0.101:3000/" + item.image,
+        image: "http://192.168.0.101:3000/" + item.image, //show image to client
       };
     });
     await connect.execute(insertToOrder, [
@@ -82,10 +82,10 @@ const checkout = async (req, res) => {
       totalPrice,
       userId,
       null,
-    ]);
+    ]); // insert to order
 
     await data.map(async (item) => {
-      await connect.execute(queryUpdateCartItem, [1, item.CartId]);
+      await connect.execute(queryUpdateCartItem, [1, item.CartId]); //update instance checkout of cart => not show in cart from client
     });
     return res.status(201).json({ msg: "Check out successfully" });
   } catch (error) {
