@@ -9,7 +9,11 @@ const refreshTokenFromBody = async (req, res) => {
   }
   const refreshTokenFromBody = await req.body.refreshToken;
   if (!refreshTokenFromBody) {
-    return res.status(400).send("refresh toke not found.");
+    return res.status(400).send("refresh token not found.");
+  }
+  let refreshTokenToClient = await req.body.refreshTokenToClient;
+  if (!refreshTokenFromBody) {
+    return res.status(400).send("refreshTokenToClient not found.");
   }
   const accessTokenSecret =
     process.env.ACCESS_TOKEN_SECRET || jwtVariable.accessTokenSecret;
@@ -23,7 +27,6 @@ const refreshTokenFromBody = async (req, res) => {
   if (!decoded) {
     return res.status(400).send("Access token illegal.");
   }
-  let refreshTokenToClient = await req.body.refreshTokenToClient;
 
   const phone = decoded.payload.phone;
   const query = "SELECT * FROM user WHERE phone = ?";
