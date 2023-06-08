@@ -3,8 +3,8 @@ const connect = require("../config/configDB");
 const authMethod = require("../auth/auth.methods");
 const randToken = require("rand-token");
 const createAccount = async (req, res) => {
-  let { name, phone, password } = await req.body;
-  if (!name || !password || !phone) {
+  let { name, phone, password,token } = await req.body;
+  if (!name || !password || !phone || !token) {
     return res.status(404).json({ msg: "Data empty" });
   }
   const query = "INSERT INTO user VALUES (?,?,?,?,?,?,?)";
@@ -16,9 +16,9 @@ const createAccount = async (req, res) => {
       null,
       phone,
       name,
-      "",
+      "ba vi",
       password,
-      "",
+      token,
       "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg",
     ]);
     res.status(201).json("insert successfully !");
