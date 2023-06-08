@@ -2,6 +2,7 @@ const express = require("express");
 const productController = require("../controllers/productController");
 const userController = require("../controllers/userController");
 const cartController = require("../controllers/cartController");
+const orderController = require("../controllers/orderController");
 
 const auth = require("../auth/auth.middleware");
 const Router = express.Router();
@@ -35,14 +36,23 @@ Router.put("/user/:id", auth.isAuth, userController.updateAccount);
 Router.post("/user/createAccount", userController.createAccount);
 Router.post("/user/login", userController.login);
 
-//cart 
+//cart
 Router.post("/cart/addToCart", auth.isAuth, cartController.addToCart);
 Router.post("/cart/checkout/:userId", auth.isAuth, cartController.checkout);
 
-Router.delete("/cart/removeToCart/:id", auth.isAuth, cartController.removeToCart);
-Router.get("/cart/:id",  auth.isAuth,cartController.getCartById);
+Router.delete(
+  "/cart/removeToCart/:id",
+  auth.isAuth,
+  cartController.removeToCart
+);
+Router.get("/cart/:id", auth.isAuth, cartController.getCartById);
 
+//order
 
-
-
+Router.get("/order/:id", auth.isAuth, orderController.getOrder);
+Router.delete(
+  "/order/removeOrder/:id",
+  auth.isAuth,
+  orderController.deleteOrder
+);
 module.exports = Router;
