@@ -73,6 +73,7 @@ const checkout = async (req, res) => {
         image: "http://192.168.0.101:3000/" + item.image, //show image to client
       };
     });
+
     await connect.execute(insertToOrder, [
       null,
       JSON.stringify(dataNew),
@@ -89,6 +90,7 @@ const checkout = async (req, res) => {
     });
     return res.status(201).json({ msg: "Check out successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ msg: "Check out error" });
   }
 };
