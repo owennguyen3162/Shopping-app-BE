@@ -3,6 +3,7 @@ const productController = require("../controllers/productController");
 const userController = require("../controllers/userController");
 const cartController = require("../controllers/cartController");
 const orderController = require("../controllers/orderController");
+const notificationController = require("../controllers/notificationController");
 
 const auth = require("../auth/auth.middleware");
 const Router = express.Router();
@@ -54,5 +55,11 @@ Router.delete(
   "/order/removeOrder/:id",
   auth.isAuth,
   orderController.deleteOrder
+);
+
+//notification
+Router.post(
+  "/user/sendNotification/:FcmToken",
+  notificationController.pushNotification
 );
 module.exports = Router;
