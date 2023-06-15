@@ -59,7 +59,17 @@ Router.delete(
 
 //notification
 Router.post(
-  "/user/sendNotification/:FcmToken",
+  "/user/sendNotification/:userId/:orderId/:status",
   notificationController.pushNotification
 );
+Router.delete(
+  "/user/deleteNotification/:id",
+  notificationController.deleteNotification
+);
+
+Router.get(
+  "/user/getNotification/:userId",
+  notificationController.getNotificationInDB
+);
+
 module.exports = Router;
