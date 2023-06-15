@@ -1,52 +1,109 @@
 const connect = require("../config/configDB");
 const admin = require("../../admin");
 const pushNotification = async (req, res) => {
-  const { FcmToken } = await req.params;
-  //push notification: TODO
-  const registrationToken = FcmToken;
+  const { userId, orderId, status } = await req.params;
+  const query = "INSERT INTO notification VALUES (?,?,?,?,?)";
+  const selectFcmToken = "SELECT fcmToken FROM user where id = ?";
+  const updateStatusOrder = "UPDATE orders SET status = ? where id = ?";
+  const updateStatusOrderDone =
+    "UPDATE orders SET status = ?, date = ? where id = ?";
+
   const date = new Date();
-  //description push to mobile app
-  message = {
-    token: registrationToken,
-    data: {
-      type: "Notification",
-    },
-    notification: {
-      body: `Your order has been confirmed at Time ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} Day ${date.getDate()} - ${date.getMonth() + 1} - ${date.getFullYear()})`,
-    },
-    //config notification for ios
-    apns: {
-      payload: {
-        aps: {
-          "mutable-content": 1,
+  const body = `Your order with code ${orderId} has been ${status} at Time ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} Day ${date.getDate()} - ${
+    date.getMonth() + 1
+  } - ${date.getFullYear()}`;
+  const bodyDone = `Your order with code ${orderId} has been successfully delivered to you at Time ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} Day ${date.getDate()} - ${
+    date.getMonth() + 1
+  } - ${date.getFullYear()}`;
+  try {
+    const [data] = await connect.execute(selectFcmToken, [userId]);
+    if (data.length !== 0) {
+      const registrationToken = data[0].fcmToken;
+      //description push to mobile app
+      message = {
+        token: registrationToken,
+        data: {
+          type: "Notification",
         },
-      },
-      fcm_options: {
-        //     image:
-        //       "https://i.pinimg.com/236x/c2/9a/7d/c29a7d29348b1a3f502803ab9d8355cc.jpg",
-      },
-    },
-    //config notification for android
-    android: {
-      notification: {
-        // image:
-        //   "https://i.pinimg.com/236x/c2/9a/7d/c29a7d29348b1a3f502803ab9d8355cc.jpg",
-      },
-    },
-  };
+        notification: {
+          body: status === "done" ? bodyDone : body,
+        },
+        //config notification for ios
+        apns: {
+          payload: {
+            aps: {
+              "mutable-content": 1,
+            },
+          },
+          fcm_options: {
+            //     image:
+            //       "https://i.pinimg.com/236x/c2/9a/7d/c29a7d29348b1a3f502803ab9d8355cc.jpg",
+          },
+        },
+        //config notification for android
+        android: {
+          notification: {
+            // image:
+            //   "https://i.pinimg.com/236x/c2/9a/7d/c29a7d29348b1a3f502803ab9d8355cc.jpg",
+          },
+        },
+      };
+      admin
+        .messaging()
+        .send(message)
+        .then(async (response) => {
+          await connect.execute(query, [
+            null,
+            userId,
+            status === "done" ? bodyDone : body,
+            orderId,
+            null,
+          ]);
+          if (status === "done") {
+            await connect.execute(updateStatusOrderDone, [
+              status,
+              null,
+              orderId,
+            ]);
+          } else {
+            await connect.execute(updateStatusOrder, [status, orderId]);
+          }
 
-  admin
-    .messaging()
-    .send(message)
-    .then((response) => {
-      console.log("Successfully sent message:", response);
-    })
-    .catch((error) => {
-      console.log("Error sending message:", error);
-    });
-
-  //response to client
-  res.status(200).json({ notification: "this is notification" });
+          return res
+            .status(201)
+            .json({ notification: "this is notification" + response });
+        })
+        .catch((error) => {
+          return res
+            .status(500)
+            .json({ msg: "Error sending message: " + error });
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({ msg: error });
+  }
 };
 
-module.exports = { pushNotification };
+const getNotificationInDB = async (req, res) => {
+  const { userId } = await req.params;
+  const query = "SELECT * FROM notification WHERE userId = ?";
+  try {
+    const [data] = await connect.execute(query, [userId]);
+    res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ msg: error });
+  }
+};
+
+const deleteNotification = async (req, res) => {
+  const { id } = await req.params;
+  const query = "DELETE FROM notification WHERE id = ?";
+  try {
+    await connect.execute(query, [id]);
+    return res.status(204).json({ msg: "delete successfully" });
+  } catch (error) {
+    return res.status(500).json({ msg: error });
+  }
+};
+
+module.exports = { pushNotification, getNotificationInDB, deleteNotification };
