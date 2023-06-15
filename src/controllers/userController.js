@@ -2,12 +2,13 @@ const bcrypt = require("bcrypt");
 const connect = require("../config/configDB");
 const authMethod = require("../auth/auth.methods");
 const randToken = require("rand-token");
+const jwtVariable = require('../variables/jwt')
 const createAccount = async (req, res) => {
-  let { name, phone, password,token } = await req.body;
-  if (!name || !password || !phone || !token) {
+  let { name, phone, password, token } = await req.body;
+  if (!name || !password || !phone) {
     return res.status(404).json({ msg: "Data empty" });
   }
-  const query = "INSERT INTO user VALUES (?,?,?,?,?,?,?)";
+  const query = "INSERT INTO user VALUES (?,?,?,?,?,?)";
   const saltRounds = 10;
   const genSalt = bcrypt.genSaltSync(saltRounds);
   password = bcrypt.hashSync(password, genSalt);
@@ -18,7 +19,6 @@ const createAccount = async (req, res) => {
       name,
       "ba vi",
       password,
-      token,
       "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg",
     ]);
     res.status(201).json("insert successfully !");
@@ -26,10 +26,10 @@ const createAccount = async (req, res) => {
     res.status(500).json({ msg: "insert error " + error });
   }
 };
-const updateAccount = async () => {};
+const updateAccount = async () => { };
 
 const login = async (req, res) => {
-  let { phone, password } = await req.body;
+  let { phone, password, fcmToken } = await req.body;
   const query = "SELECT * FROM user WHERE phone = ?";
   try {
     let [data] = await connect.execute(query, [phone]);
@@ -57,15 +57,26 @@ const login = async (req, res) => {
     let refreshToken = randToken.generate(120);
     data[0].accessToken = accessToken;
     data[0].refreshToken = refreshToken;
+    await updateFcmToken(fcmToken, phone)
+
     return res.status(200).json({
       msg: "login successfully",
       data: data[0],
     });
   } catch (error) {
-    return res.status(500).json({ msg: "login fail" });
+    return res.status(500).json({ msg: "login fail" + error });
   }
 };
 
-const getAccount = async () => {};
+const getAccount = async () => { };
+
+const updateFcmToken = async (token, phone) => {
+  const query = "UPDATE user set fcmToken = ? where phone = ?"
+  try {
+    await connect.execute(query, [token, phone]);
+  } catch (error) {
+    console.log("update token error " + error);
+  }
+}
 
 module.exports = { createAccount, updateAccount, getAccount, login };
