@@ -46,7 +46,7 @@ const getCartById = async (req, res) => {
     let dataNew = data.map((item) => {
       return {
         ...item,
-        image: "http://192.168.0.101:3000/" + item.image,
+        image: "http://192.168.0.103:3000/" + item.image,
       };
     });
     return res.status(200).json(dataNew);
@@ -70,7 +70,7 @@ const checkout = async (req, res) => {
     let dataNew = await data.map((item) => {
       return {
         ...item,
-        image: "http://192.168.0.101:3000/" + item.image, //show image to client
+        image: "http://192.168.0.103:3000/" + item.image, //show image to client
       };
     });
 
@@ -79,7 +79,7 @@ const checkout = async (req, res) => {
       JSON.stringify(dataNew),
       address,
       options,
-      "Waiting",
+      "waiting",
       totalPrice,
       userId,
       null,
