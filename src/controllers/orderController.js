@@ -2,7 +2,7 @@ const connect = require("../config/configDB");
 
 const getOrder = async (req, res) => {
   const userId = await req.params.id;
-  const query = "SELECT * FROM orders WHERE userId = ?";
+  const query = 'SELECT * FROM orders WHERE userId = ? AND status <> "done" ';
   try {
     const [data] = await connect.execute(query, [userId]);
     res.status(200).json({ data });
@@ -30,5 +30,6 @@ const deleteOrder = async (req, res) => {
     res.status(500).json({ msg: "error" });
   }
 };
+
 
 module.exports = { getOrder, deleteOrder };
