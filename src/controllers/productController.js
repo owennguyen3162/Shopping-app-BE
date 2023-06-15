@@ -2,12 +2,12 @@ const connection = require("../config/configDB");
 
 const getProductByCategory = async (req, res) => {
   const category = await req.params.category;
-  const query = "SELECT * FROM Product WHERE category = ?";
+  const query = "SELECT * FROM product WHERE category = ?";
 
   try {
     const [data] = await connection.execute(query, [category]);
     const dataNew = data.map((item) => {
-      return { ...item, image: "http://192.168.0.101:3000/" + item.image };
+      return { ...item, image: "http://192.168.0.103:3000/" + item.image };
     });
     return res.status(200).json({ data: dataNew });
   } catch (error) {
@@ -24,7 +24,7 @@ const addProduct = async (req, res) => {
   if (!name || !price || !quantity || !category || !description) {
     return res.status(500).json({ msg: "empty value" });
   }
-  const query = "INSERT INTO Product VALUES (?,?,?,?,?,?,?,?)";
+  const query = "INSERT INTO product VALUES (?,?,?,?,?,?,?,?)";
   try {
     await connection.execute(query, [
       null,
@@ -49,7 +49,7 @@ const getNewArrivals = async (req, res) => {
     const [data] = await connection.execute(query);
     if (data.length !== 0) {
       const dataNew = data.map((item) => {
-        return { ...item, image: "http://192.168.0.101:3000/" + item.image };
+        return { ...item, image: "http://192.168.0.103:3000/" + item.image };
       });
       return res.status(200).json({ data: dataNew });
     } else {
@@ -58,7 +58,7 @@ const getNewArrivals = async (req, res) => {
       const [data] = await connection.execute(query);
       if (data.length !== 0) {
         const dataNew = data.map((item) => {
-          return { ...item, image: "http://192.168.0.101:3000/" + item.image };
+          return { ...item, image: "http://192.168.0.103:3000/" + item.image };
         });
         return res.status(200).json({ data: dataNew });
       }
@@ -73,7 +73,7 @@ const getBestSelling = async (req, res) => {
   try {
     const [data] = await connection.execute(query);
     const dataNew = data.map((item) => {
-      return { ...item, image: "http://192.168.0.101:3000/" + item.image };
+      return { ...item, image: "http://192.168.0.103:3000/" + item.image };
     });
     return res.status(200).json({ data: dataNew });
   } catch (error) {
