@@ -1,5 +1,19 @@
 const connection = require("../config/configDB");
 
+//Controller for WEB
+
+const HomePage = async (req, res) => {
+  const query = "SELECT * FROM product";
+  try {
+    const [data] = await connection.execute(query);
+    res.render("Home", { data: data });
+  } catch (error) {
+    res.json({ msg: error });
+  }
+};
+
+//Controller for API
+
 const getProductByCategory = async (req, res) => {
   const category = await req.params.category;
   const query = "SELECT * FROM product WHERE category = ?";
@@ -86,4 +100,5 @@ module.exports = {
   addProduct,
   getNewArrivals,
   getBestSelling,
+  HomePage,
 };
