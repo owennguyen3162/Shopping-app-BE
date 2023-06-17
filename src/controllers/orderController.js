@@ -1,5 +1,18 @@
 const connect = require("../config/configDB");
 
+//WEB
+
+const getOrders = async (req, res) => {
+  const query = "SELECT orders.id, orders.cartItem, orders.address, orders.options, orders.status, orders.totalPrice, user.name, user.phone  FROM orders INNER JOIN user ON user.id = orders.userId";
+  try {
+    const [data] = await connect.execute(query);
+    res.render("Orders", { data });
+  } catch (error) {
+    res.status(500).json({ msg: "error" });
+  }
+};
+
+//API FOR MOBILE
 const getOrder = async (req, res) => {
   const userId = await req.params.id;
   const query = 'SELECT * FROM orders WHERE userId = ? AND status <> "done" ';
@@ -31,5 +44,4 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-
-module.exports = { getOrder, deleteOrder };
+module.exports = { getOrder, deleteOrder, getOrders };
