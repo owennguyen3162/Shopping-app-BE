@@ -1,19 +1,3 @@
-<!--
-
-=========================================================
-* Now UI Dashboard - v1.5.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/now-ui-dashboard
-* Copyright 2019 Creative Tim (http://www.creative-tim.com)
-
-* Designed by www.invisionapp.com Coded by www.creative-tim.com
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,23 +11,19 @@
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
     name='viewport' />
-  <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
     integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-  <!-- CSS Files -->
   <link href="../css/bootstrap.min.css" rel="stylesheet" />
   <link href="../css/now-ui-dashboard.css?v=1.5.0" rel="stylesheet" />
-  <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="../demo/demo.css" rel="stylesheet" />
+  <link rel="stylesheet" href="sweetalert2.min.css">
+
 </head>
 
 <body class="">
   <div class="wrapper ">
     <div class="sidebar" data-color="orange">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
-    -->
       <div class="logo">
         <a href="http://www.creative-tim.com" class="simple-text logo-normal">
           Hi Admin
@@ -52,32 +32,27 @@
       <div class="sidebar-wrapper" id="sidebar-wrapper">
         <ul class="nav">
           <li class="active ">
-            <a href="./dashboard.html">
-              <i class="now-ui-icons design_app"></i>
+            <a href="/home">
               <p>Home</p>
             </a>
           </li>
           <li>
-            <a href="./notifications.html">
-              <i class="now-ui-icons ui-1_bell-53"></i>
+            <a href="/order">
               <p>Orders</p>
             </a>
           </li>
           <li>
             <a href="./tables.html">
-              <i class="now-ui-icons design_bullet-list-67"></i>
               <p>statistics</p>
             </a>
           </li>
           <li>
-            <a href="./typography.html">
-              <i class="now-ui-icons text_caps-small"></i>
+            <a href="/user">
               <p>User</p>
             </a>
           </li>
           <li>
             <a href="./user.html">
-              <i class="now-ui-icons users_single-02"></i>
               <p>Profile</p>
             </a>
           </li>
@@ -96,7 +71,8 @@
           </div>
           <a class="navbar-brand" href="#pablo">Table List</a>
         </div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
+          aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-bar navbar-kebab"></span>
           <span class="navbar-toggler-bar navbar-kebab"></span>
           <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -123,7 +99,13 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title"> list Products</h4>
+                <div class="d-flex  justify-content-between">
+                  <h4 class="card-title"> list Products</h4>
+                  <a href="/home/addProduct">
+                    <img style="width: 50px; height: 50px;"
+                      src="https://cdn-icons-png.flaticon.com/128/1828/1828817.png" alt="Image" />
+                  </a>
+                </div>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
@@ -153,19 +135,27 @@
                             <%= item.id %>
                           </td>
                           <td>
-                          <img style="width: 60px; height: 60px;" src="/<%= item.image %>" alt="<%= item.name %>"/>
+                            <img style="width: 60px; height: 60px;" src="/<%= item.image %>" alt="<%= item.name %>" />
                           </td>
                           <td>
                             <%= item.name %>
                           </td>
                           <td>
-                           $ <%= item.price %>
+                            $ <%= item.price %>
                           </td>
                           <td class="text-right">
-                            <!-- $36,738 -->
+                            <a href="/home/editProduct/<%=item.id%>">
+                              <img style="width: 30px; height: 30px;"
+                                src="https://cdn-icons-png.flaticon.com/512/10336/10336582.png" alt="edit" srcset="">
+                            </a>
+                          </td>
+                          <td class="text-right">
+                            <img style="width: 30px; height: 30px;"
+                              src="https://cdn-icons-png.flaticon.com/128/9068/9068885.png" alt="edit" srcset=""
+                              onclick='deleteProduct("<%= item.id%>")'>
                           </td>
                         </tr>
-                       <%})%>
+                        <%})%>
                     </tbody>
                   </table>
                 </div>
@@ -199,18 +189,39 @@
             &copy;
             <script>
               document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
-            </script>, Designed by <a href="https://www.facebook.com/profile.php?id=100034781511509" target="_blank">Owne nguyen</a>. Coded by <a
+            </script>, Designed by <a href="https://www.facebook.com/profile.php?id=100034781511509"
+              target="_blank">Owne nguyen</a>. Coded by <a
               href="https://www.facebook.com/profile.php?id=100034781511509" target="_blank">Owen nguyen</a>.
           </div>
         </div>
       </footer>
     </div>
   </div>
+  <form id="form" method="post"></form>
+  <script>
+    const deleteProduct = (id) => {
+      Swal.fire({
+        title: 'Do you want delete?',
+        showCancelButton: true,
+        confirmButtonText: 'OK',
+        icon: 'warning',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const form = document.getElementById("form");
+          form.action = `/home/deleteProduct/${id}?_method=DELETE`
+          form.submit();
+        }
+      })
+    }
+  </script>
   <!--   Core JS Files   -->
   <script src="../js/core/jquery.min.js"></script>
   <script src="../js/core/popper.min.js"></script>
   <script src="../js/core/bootstrap.min.js"></script>
   <script src="../js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="sweetalert2.all.min.js"></script>
+  <script src="sweetalert2.min.js"></script>
   <!--  Google Maps Plugin    -->
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
   <!-- Chart JS -->
