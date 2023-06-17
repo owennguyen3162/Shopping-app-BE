@@ -12,6 +12,17 @@ const HomePage = async (req, res) => {
   }
 };
 
+const deleteProduct = async (req, res) => {
+  const { productId } = await req.params;
+  const query = "DELETE FROM product where id = ?";
+  try {
+    await connection.execute(query, [productId]);
+    res.redirect("back");
+  } catch (error) {
+    res.json({ msg: error });
+  }
+};
+
 //Controller for API
 
 const getProductByCategory = async (req, res) => {
@@ -26,6 +37,57 @@ const getProductByCategory = async (req, res) => {
     return res.status(200).json({ data: dataNew });
   } catch (error) {
     return res.status(500).json({ error });
+  }
+};
+
+const viewAddProduct = (req, res) => {
+  res.render("AddProduct");
+};
+
+const editProduct = async (req, res) => {
+  const { productId } = await req.params;
+  const { name, description, price, quantity, category } = await req.body;
+  let query =
+    "UPDATE product SET name = ?, description = ?, price = ?, quantity = ?, category = ? WHERE id = ?";
+  let image;
+  if (await req.file) {
+    query =
+      "UPDATE product SET name = ?, description = ?, price = ?, quantity = ?, category = ?, image = ? WHERE id = ?";
+    image = await req.file.filename;
+  }
+  try {
+    req.file
+      ? await connection.execute(query, [
+          name,
+          description,
+          price,
+          quantity,
+          category,
+          image,
+          productId,
+        ])
+      : await connection.execute(query, [
+          name,
+          description,
+          price,
+          quantity,
+          category,
+          productId,
+        ]);
+    return res.redirect("/home");
+  } catch (error) {
+    res.json({ msg: error });
+  }
+};
+
+const viewEditProduct = async (req, res) => {
+  const { productId } = await req.params;
+  const query = "SELECT * FROM product WHERE id = ?";
+  try {
+    const [data] = await connection.execute(query, [productId]);
+    res.render("EditProduct", { data: data[0] });
+  } catch (error) {
+    res.json({ msg: error });
   }
 };
 
@@ -50,9 +112,9 @@ const addProduct = async (req, res) => {
       description,
       null,
     ]);
-    return res.status(201).json({ msg: "product created !!!" });
+    return res.redirect("back");
   } catch (error) {
-    return res.status(500).json({ error });
+    return res.json({ error });
   }
 };
 
@@ -101,4 +163,8 @@ module.exports = {
   getNewArrivals,
   getBestSelling,
   HomePage,
+  viewAddProduct,
+  deleteProduct,
+  editProduct,
+  viewEditProduct,
 };
