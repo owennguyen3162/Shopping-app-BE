@@ -2,7 +2,21 @@ const bcrypt = require("bcrypt");
 const connect = require("../config/configDB");
 const authMethod = require("../auth/auth.methods");
 const randToken = require("rand-token");
-const jwtVariable = require('../variables/jwt')
+const jwtVariable = require("../variables/jwt");
+
+//WEB
+
+const getUSers = async (req, res) => {
+  const query = "SELECT * FROM user";
+  try {
+    const [data] = await connect.execute(query);
+    res.render("User", {data});
+  } catch (error) {
+    res.json({ msg: error });
+  }
+};
+
+//API FOR MOBILE
 const createAccount = async (req, res) => {
   let { name, phone, password, token } = await req.body;
   if (!name || !password || !phone) {
@@ -26,7 +40,7 @@ const createAccount = async (req, res) => {
     res.status(500).json({ msg: "insert error " + error });
   }
 };
-const updateAccount = async () => { };
+const updateAccount = async () => {};
 
 const login = async (req, res) => {
   let { phone, password, fcmToken } = await req.body;
@@ -57,7 +71,7 @@ const login = async (req, res) => {
     let refreshToken = randToken.generate(120);
     data[0].accessToken = accessToken;
     data[0].refreshToken = refreshToken;
-    await updateFcmToken(fcmToken, phone)
+    await updateFcmToken(fcmToken, phone);
 
     return res.status(200).json({
       msg: "login successfully",
@@ -68,15 +82,15 @@ const login = async (req, res) => {
   }
 };
 
-const getAccount = async () => { };
+const getAccount = async () => {};
 
 const updateFcmToken = async (token, phone) => {
-  const query = "UPDATE user set fcmToken = ? where phone = ?"
+  const query = "UPDATE user set fcmToken = ? where phone = ?";
   try {
     await connect.execute(query, [token, phone]);
   } catch (error) {
     console.log("update token error " + error);
   }
-}
+};
 
-module.exports = { createAccount, updateAccount, getAccount, login };
+module.exports = { getUSers, createAccount, updateAccount, getAccount, login };
