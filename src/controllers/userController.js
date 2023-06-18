@@ -18,11 +18,11 @@ const getUSers = async (req, res) => {
 
 //API FOR MOBILE
 const createAccount = async (req, res) => {
-  let { name, phone, password, token } = await req.body;
+  let { name, phone, password } = await req.body;
   if (!name || !password || !phone) {
     return res.status(404).json({ msg: "Data empty" });
   }
-  const query = "INSERT INTO user VALUES (?,?,?,?,?,?)";
+  const query = "INSERT INTO user VALUES (?,?,?,?,?,?,?)";
   const saltRounds = 10;
   const genSalt = bcrypt.genSaltSync(saltRounds);
   password = bcrypt.hashSync(password, genSalt);
@@ -31,9 +31,10 @@ const createAccount = async (req, res) => {
       null,
       phone,
       name,
-      "ba vi",
+      "",
       password,
-      "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg",
+      "",
+      "userImage-1687082660970-119471103.png",
     ]);
     res.status(201).json("insert successfully !");
   } catch (error) {
@@ -120,4 +121,40 @@ const updateFcmToken = async (token, phone) => {
   }
 };
 
-module.exports = { getUSers, createAccount, updateAccount, getAccount, login };
+const changePassword = async (req, res) => {
+  const { password, passwordOld } = await req.body;
+  const { userId } = await req.params;
+  const query = "SELECT password, phone, id FROM user WHERE id = ?";
+  const queryUpdate = "UPDATE user SET password = ? WHERE id = ?";
+  try {
+    const [data] = await connect.execute(query, [userId]);
+    if (data.length !== 0) {
+      const check = bcrypt.compareSync(passwordOld, data[0].password);
+      if (!check) {
+        return res.status(404).json({ msg: "wrong password " });
+      } else {
+        const salt = bcrypt.genSaltSync(10);
+        const passwordNew = bcrypt.hashSync(password, salt);
+        try {
+          await connect.execute(queryUpdate, [passwordNew, userId]);
+          return res.status(200).json({ msg: "Password Changed !" });
+        } catch (error) {
+          console.log(error);
+          return res.status(500).json({ msg: error });
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: error });
+  }
+};
+
+module.exports = {
+  getUSers,
+  createAccount,
+  updateAccount,
+  getAccount,
+  login,
+  changePassword,
+};
