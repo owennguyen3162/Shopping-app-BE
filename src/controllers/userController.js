@@ -10,7 +10,7 @@ const getUSers = async (req, res) => {
   const query = "SELECT * FROM user";
   try {
     const [data] = await connect.execute(query);
-    res.render("User", {data});
+    res.render("User", { data });
   } catch (error) {
     res.json({ msg: error });
   }
@@ -40,7 +40,19 @@ const createAccount = async (req, res) => {
     res.status(500).json({ msg: "insert error " + error });
   }
 };
-const updateAccount = async () => {};
+const updateAccount = async (req, res) => {
+  const { name, address } = await req.body;
+  const { id } = await req.params;
+  let image = await req.file.filename;
+  let query = "UPDATE user SET name = ? , address = ?, image = ? WHERE id = ?";
+
+  try {
+    await connect.execute(query, [name, address, image, id]);
+    return res.status(200).json({ msg: "update successfully" });
+  } catch (error) {
+    return res.status(500).json({ msg: error });
+  }
+};
 
 const login = async (req, res) => {
   let { phone, password, fcmToken } = await req.body;
@@ -71,25 +83,40 @@ const login = async (req, res) => {
     let refreshToken = randToken.generate(120);
     data[0].accessToken = accessToken;
     data[0].refreshToken = refreshToken;
-    await updateFcmToken(fcmToken, phone);
-
-    return res.status(200).json({
-      msg: "login successfully",
-      data: data[0],
-    });
+    return (await updateFcmToken(fcmToken, phone))
+      ? res.status(200).json({
+          msg: "login successfully",
+          data: data[0],
+        })
+      : res.status(500).json({
+          msg: "login fail",
+        });
   } catch (error) {
     return res.status(500).json({ msg: "login fail" + error });
   }
 };
 
-const getAccount = async () => {};
+const getAccount = async (req, res) => {
+  const { id } = await req.params;
+  const query = "SELECT name , phone, address, image FROM user WHERE id = ?";
+  try {
+    const [data] = await connect.execute(query, [id]);
+    const dataNew = data.map((item) => {
+      return { ...item, image: `http://192.168.0.103:3000/${item.image}` };
+    });
+    res.status(200).json({ data: dataNew[0] });
+  } catch (error) {
+    return res.status(500).json({ msg: "get user failed" + error });
+  }
+};
 
 const updateFcmToken = async (token, phone) => {
   const query = "UPDATE user set fcmToken = ? where phone = ?";
   try {
     await connect.execute(query, [token, phone]);
+    return true;
   } catch (error) {
-    console.log("update token error " + error);
+    return false;
   }
 };
 
