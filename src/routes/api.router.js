@@ -33,7 +33,18 @@ Router.get(
 
 //user
 Router.get("/user/:id", auth.isAuth, userController.getAccount);
-Router.put("/user/:id", auth.isAuth, upload.single("userImage"), userController.updateAccount);
+Router.put(
+  "/user/:id",
+  auth.isAuth,
+  upload.single("userImage"),
+  userController.updateAccount
+);
+Router.put(
+  "/user/changePassword/:userId",
+  auth.isAuth,
+  userController.changePassword
+);
+
 Router.post("/user/createAccount", userController.createAccount);
 Router.post("/user/login", userController.login);
 
