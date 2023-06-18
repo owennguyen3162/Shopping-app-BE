@@ -95,7 +95,7 @@ const addProduct = async (req, res) => {
   const { name, price, quantity, category, description } = await req.body;
   let image;
   if (req.file) {
-    image = req.file.filename;
+    image = await req.file.filename;
   }
   if (!name || !price || !quantity || !category || !description) {
     return res.status(500).json({ msg: "empty value" });
