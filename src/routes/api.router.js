@@ -33,7 +33,7 @@ Router.get(
 
 //user
 Router.get("/user/:id", auth.isAuth, userController.getAccount);
-Router.put("/user/:id", auth.isAuth, userController.updateAccount);
+Router.put("/user/:id", auth.isAuth, upload.single("userImage"), userController.updateAccount);
 Router.post("/user/createAccount", userController.createAccount);
 Router.post("/user/login", userController.login);
 
@@ -51,6 +51,7 @@ Router.get("/cart/:id", auth.isAuth, cartController.getCartById);
 //order
 
 Router.get("/order/:id", auth.isAuth, orderController.getOrder);
+Router.get("/order/history/:id", auth.isAuth, orderController.getOrderHistory);
 Router.delete(
   "/order/removeOrder/:id",
   auth.isAuth,
