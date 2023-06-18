@@ -1,7 +1,8 @@
 const connect = require("../config/configDB");
 const admin = require("../../admin");
 const pushNotification = async (req, res) => {
-  const { userId, orderId, status } = await req.params;
+  const { userId, orderId } = await req.params;
+  const { status } = await req.body;
   const query = "INSERT INTO notification VALUES (?,?,?,?,?)";
   const selectFcmToken = "SELECT fcmToken FROM user where id = ?";
   const updateStatusOrder = "UPDATE orders SET status = ? where id = ?";
@@ -35,17 +36,6 @@ const pushNotification = async (req, res) => {
               "mutable-content": 1,
             },
           },
-          fcm_options: {
-            //     image:
-            //       "https://i.pinimg.com/236x/c2/9a/7d/c29a7d29348b1a3f502803ab9d8355cc.jpg",
-          },
-        },
-        //config notification for android
-        android: {
-          notification: {
-            // image:
-            //   "https://i.pinimg.com/236x/c2/9a/7d/c29a7d29348b1a3f502803ab9d8355cc.jpg",
-          },
         },
       };
       admin
@@ -69,18 +59,14 @@ const pushNotification = async (req, res) => {
             await connect.execute(updateStatusOrder, [status, orderId]);
           }
 
-          return res
-            .status(201)
-            .json({ notification: "this is notification" + response });
+          return res.redirect("/order");
         })
         .catch((error) => {
-          return res
-            .status(500)
-            .json({ msg: "Error sending message: " + error });
+          return res.json({ msg: "Error sending message: " + error });
         });
     }
   } catch (error) {
-    return res.status(500).json({ msg: error });
+    return res.json({ msg: error });
   }
 };
 
