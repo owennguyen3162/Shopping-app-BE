@@ -40,7 +40,7 @@ const removeToCart = async (req, res) => {
 const getCartById = async (req, res) => {
   const { id } = await req.params;
   const query =
-    "SELECT cart.id ,product.name, product.image, productcart.size, product.price ,product.description FROM product INNER JOIN productcart ON product.id = productcart.productId INNER JOIN cart ON cart.id = productcart.cartId INNER JOIN user ON user.id = cart.userId WHERE user.id = ? AND cart.checkout = ?";
+    "SELECT user.address ,cart.id ,product.name, product.image, productcart.size, product.price ,product.description FROM product INNER JOIN productcart ON product.id = productcart.productId INNER JOIN cart ON cart.id = productcart.cartId INNER JOIN user ON user.id = cart.userId WHERE user.id = ? AND cart.checkout = ?";
   try {
     let [data] = await connect.execute(query, [id, 0]);
     let dataNew = data.map((item) => {
@@ -51,7 +51,7 @@ const getCartById = async (req, res) => {
     });
     return res.status(200).json(dataNew);
   } catch (error) {
-    res.status(500).json({ msg: "add to cart error" });
+    res.status(500).json({ msg: "get data error" });
   }
 };
 const checkout = async (req, res) => {
