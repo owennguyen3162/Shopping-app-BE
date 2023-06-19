@@ -10,12 +10,12 @@ const pushNotification = async (req, res) => {
     "UPDATE orders SET status = ?, date = ? where id = ?";
 
   const date = new Date();
-  const body = `Your order with code ${orderId} has been ${status} at Time ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} Day ${date.getDate()} - ${
+  const body = `Your order with code ${orderId} has been ${status} at Time ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} Day ${date.getDate()}/${
     date.getMonth() + 1
-  } - ${date.getFullYear()}`;
-  const bodyDone = `Your order with code ${orderId} has been successfully delivered to you at Time ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} Day ${date.getDate()} - ${
+  }/${date.getFullYear()}`;
+  const bodyDone = `Your order with code ${orderId} has been successfully delivered to you at Time ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} Day ${date.getDate()}/${
     date.getMonth() + 1
-  } - ${date.getFullYear()}`;
+  }/${date.getFullYear()}`;
   try {
     const [data] = await connect.execute(selectFcmToken, [userId]);
     if (data.length !== 0) {
