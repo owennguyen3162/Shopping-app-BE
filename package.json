@@ -31,5 +31,8 @@
     "nodemon": "^2.0.22",
     "rand-token": "^1.0.1",
     "react-native": "^0.71.10"
+  },
+  "engines": {
+    "node": ">=14 <15"
   }
 }
