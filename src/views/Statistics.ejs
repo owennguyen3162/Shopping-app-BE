@@ -36,7 +36,7 @@
                     </a>
                 </div>
                 <ul class="nav">
-                    <li class="active ">
+                    <li>
                         <a href="/home">
                             <i class="fa-solid fa-house fa-beat"></i>
                             <p>Home</p>
@@ -48,8 +48,8 @@
                             <p>Order</p>
                         </a>
                     </li>
-                    <li>
-                        <a href="/user">
+                    <li class="active ">
+                        <a href="/statistics">
                             <i class="fa-solid fa-chart-pie fa-beat"></i>
                             <p>Statistics</p>
                         </a>
@@ -81,7 +81,7 @@
                                 <span class="navbar-toggler-bar bar3"></span>
                             </button>
                         </div>
-                        <a class="navbar-brand" href="javascript:void(0)">HOME</a>
+                        <a class="navbar-brand" href="javascript:void(0)">STATISTICS</a>
                     </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -165,78 +165,32 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="title">Add Product</h5>
+                            <h5 class="title">Statistics</h5>
                         </div>
                         <div class="card-body">
-                            <form method="post" action="/home/addProduct/store" enctype="multipart/form-data">
+                            <form method="post" action="/statistics/query">
                                 <div class="row">
                                     <div class="col-md-11 pr-md-1">
-                                        <img id="image" class="mb-3" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStZvSCCWgzq_yTTMxPVjyZMq-NswPRXBZTkilC2GaicY72Xc-soVAyBdX3eJPB_ggbFsA&usqp=CAU" alt="" srcset="" style="width: 150px;height: 150px;">
                                         <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Image</label>
-                                            <label
-                                                style="border: 1px solid #2B3553; width: 100%; height: 40px; border-radius: 8px; line-height: 40px; padding-left: 20px;">Chose
-                                                image</label>
-                                            <input type="file" class="form-control" id="exampleInputEmail1"
-                                                aria-describedby="emailHelp" name="imageProduct" required  onchange="loadFile(event)">
+                                            <label for="exampleInputPassword1" class="form-label">Begin Date</label>
+                                            <input type="date" class="form-control" name="beginDate" required>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-11 pr-md-1">
                                         <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Name</label>
-                                            <input type="text" class="form-control" name="name" required>
+                                            <label for="exampleInputPassword1" class="form-label">End Date</label>
+                                            <input type="date" class="form-control" name="endDate" required>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-11 pr-md-1">
                                         <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Price</label>
-                                            <input type="number" class="form-control" step="0.1" min="0" name="price"
-                                                required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-11 pr-md-1">
-                                        <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Quantity</label>
-                                            <input type="number" class="form-control" name="quantity" min="1" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-11 pr-md-1">
-                                        <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Category</label>
-                                            <select class="form-select" aria-label="Default select example"
-                                                name="category" required
-                                                style="background-color: #27293D; border-color: #2B3553; color: white; margin-left: 20px;">
-                                                <option value="accesories">accesories
-                                                </option>
-                                                <option value="Pant">Pant
-                                                </option>
-                                                <option value="shoes">shoes
-                                                </option>
-                                                <option value="sweaters">sweaters
-                                                </option>
-                                                <option value="Underwear">Underwear
-                                                </option>
-                                                <option value="vans">vans
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-11 pr-md-1">
-                                        <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Description</label>
-                                            <input style="border: 0.5px solid #2B3553; border-radius: 8px;" type="text"
-                                                class="form-control" name="description" required />
-
+                                            <label for="exampleInputPassword1" class="form-label">Revenue</label>
+                                            <input type="number" class="form-control" step="0.1" min="0"
+                                                value="<%=data%>">
                                         </div>
                                     </div>
                                 </div>
@@ -405,13 +359,6 @@
                 });
             });
         });
-    </script>
-    <script>
-        const image = document.getElementById("image");
-        const loadFile = (event) => {
-            image.src = URL.createObjectURL(event.target.files[0]);
-        }
-
     </script>
     <script>
         $(document).ready(function () {
