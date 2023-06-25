@@ -36,13 +36,13 @@
                     </a>
                 </div>
                 <ul class="nav">
-                    <li class="active ">
+                    <li >
                         <a href="/home">
                             <i class="fa-solid fa-house fa-beat"></i>
                             <p>Home</p>
                         </a>
                     </li>
-                    <li>
+                    <li class="active ">
                         <a href="/order">
                             <i class="fa-solid fa-cart-shopping fa-beat"></i>
                             <p>Order</p>
@@ -81,7 +81,7 @@
                                 <span class="navbar-toggler-bar bar3"></span>
                             </button>
                         </div>
-                        <a class="navbar-brand" href="javascript:void(0)">HOME</a>
+                        <a class="navbar-brand" href="javascript:void(0)">ORDERS</a>
                     </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -165,99 +165,122 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="title">Edit Product</h5>
+                            <h5 class="title">Update Order</h5>
                         </div>
                         <div class="card-body">
-                            <img style="width: 100px; height: 100px;" src="/<%= data.image %>" alt="<%= data.name %>" />
-                            <form method="post" action="/home/editProduct/<%=data.id%>?_method=PUT"
-                                enctype="multipart/form-data">
+                            <form method="post"
+                                action="/order/editOrder/<%=data.userId%>/<%=data.orderId%>?_method=PUT">
                                 <div class="row">
                                     <div class="col-md-11 pr-md-1">
                                         <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Image</label>
-                                            <label style="border: 1px solid #2B3553; width: 100%; height: 40px; border-radius: 8px; line-height: 40px; padding-left: 20px;">Chose image</label>
-                                            <input type="file" class="form-control" id="exampleInputEmail1"
-                                                aria-describedby="emailHelp" name="imageProduct">
+                                            <% JSON.parse(data.cartItem).map((item)=> { %>
+                                                <img style="width: 100px; height: 100px; border: 1px solid #2B3553;"
+                                                    src="<%= item.image %>" alt="<%= item.name %>" class="mr-3" />
+                                                <%})%>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-11 pr-md-1">
                                         <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Name</label>
-                                            <input type="text" class="form-control" name="name" required
+                                            <label for="exampleInputPassword1" class="form-label">shipping
+                                                address</label>
+                                            <input type="text" class="form-control" name="address" required
+                                                value="<%=data.address%>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-11 pr-md-1">
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1" class="form-label">Option</label>
+                                            <input type="number" class="form-control" step="0.1" min="0" name="options"
+                                                required value="<%=data.options%>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-11 pr-md-1">
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1" class="form-label">Total Price</label>
+                                            <input type="number" class="form-control" name="totalPrice" min="1" required
+                                                value="<%=data.totalPrice%>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-11 pr-md-1">
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1" class="form-label">Phone</label>
+                                            <input type="number" class="form-control" name="totalPrice" min="1" required
+                                                value="<%=data.phone%>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-11 pr-md-1">
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1" class="form-label">Status</label>
+                                            <div class="form-check ml-3">
+                                                <input class="form-check-input " type="radio" name="status"
+                                                    id="flexRadioDefault1" disabled <% if(data.status==="waiting" ) { %>
+                                                checked
+                                                <%}%>
+                                                    >
+                                                    <label class="form-check-label" for="flexRadioDefault1">
+                                                        waiting
+                                                    </label>
+                                            </div>
+                                            <div class="form-check ml-3">
+                                                <input class="form-check-input" type="radio" name="status"
+                                                    id="flexRadioDefault1" value="confirmed" <%
+                                                    if(data.status==="confirmed" ) { %>
+                                                checked
+                                                <%}%>
+                                                    >
+                                                    <label class="form-check-label" for="flexRadioDefault1">
+                                                        confirmed ( shipping )
+                                                    </label>
+                                            </div>
+                                            <div class="form-check ml-3">
+                                                <input class="form-check-input" type="radio" name="status"
+                                                    id="flexRadioDefault1" value="done" <% if(data.status==="done" ) {
+                                                    %>
+                                                checked
+                                                <%}%>
+                                                    >
+                                                    <label class="form-check-label" for="flexRadioDefault1">
+                                                        successful delivery
+                                                    </label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-11 pr-md-1">
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1" class="form-label">User Name</label>
+                                            <input type="text" class="form-control" name="totalPrice" min="1" required
                                                 value="<%=data.name%>">
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-md-11 pr-md-1">
                                         <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Price</label>
-                                            <input type="number" class="form-control" step="0.1" min="0" name="price"
-                                                required value="<%=data.price%>">
+                                            <label for="exampleInputPassword1" class="form-label">Date</label>
+                                            <input type="datetime" class="form-control" name="date" required
+                                                value="<%=data.date%>">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-11 pr-md-1">
-                                        <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Quantity</label>
-                                            <input type="number" class="form-control" name="quantity" min="1" required
-                                                value="<%=data.quantity%>">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-11 pr-md-1">
-                                        <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Category</label>
-                                            <select class="form-select" aria-label="Default select example"
-                                                name="category" required
-                                                style="background-color: #27293D; border-color: #2B3553; color: white; margin-left: 20px;">
-                                                <option value="accesories" <%if(data.category==="accesories" ){ %>
-                                                    selected
-                                                    <% }%>>Pant
-                                                </option>
-                                                <option value="Pant" <%if(data.category==="Pant" ){ %>
-                                                    selected
-                                                    <% } %>>Pant
-                                                </option>
-                                                <option value="shoes" <%if(data.category==="shoes" ){ %>
-                                                    selected
-                                                    <% } %>>shoes
-                                                </option>
-                                                <option value="sweaters" <%if(data.category==="sweaters" ){ %>
-                                                    selected
-                                                    <% } %>>sweaters
-                                                </option>
-                                                <option value="Underwear" <%if(data.category==="Underwear" ){ %>
-                                                    selected
-                                                    <% } %>>Underwear
-                                                </option>
-                                                <option value="vans" <%if(data.category==="vans" ){ %>
-                                                    selected
-                                                    <% } %>>vans
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-11 pr-md-1">
-                                        <div class="form-group">
-                                            <label for="exampleInputPassword1" class="form-label">Description</label>
-                                            <textarea style="border: 0.5px solid #2B3553; border-radius: 8px;"
-                                                type="text" class="form-control" name="description" required>
-                                            <%=data.description%>
-                                            </textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                    <button type="submit" class="btn btn-fill btn-primary">Save</button>
+
+                                <button type="submit" class="btn btn-fill btn-primary">UPDATE</button>
                             </form>
                         </div>
-                       
+
                     </div>
                 </div>
             </div>
