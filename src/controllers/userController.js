@@ -16,6 +16,10 @@ const getUSers = async (req, res) => {
   }
 };
 
+const profile = async (req, res) => {
+ res.render("Profile")
+};
+
 //API FOR MOBILE
 const createAccount = async (req, res) => {
   let { name, phone, password } = await req.body;
@@ -157,4 +161,5 @@ module.exports = {
   getAccount,
   login,
   changePassword,
+  profile
 };
