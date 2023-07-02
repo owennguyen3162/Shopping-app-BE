@@ -8,7 +8,7 @@ const { URL_FOR_FPL } = require("../variables/Url");
 //WEB
 
 const getUSers = async (req, res) => {
-  const query = "SELECT * FROM user";
+  const query = "SELECT * FROM user WHERE role <> 'admin'";
   try {
     const [data] = await connect.execute(query);
     res.render("User", { data });
