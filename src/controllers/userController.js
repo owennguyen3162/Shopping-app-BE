@@ -18,7 +18,8 @@ const getUSers = async (req, res) => {
 };
 
 const profile = async (req, res) => {
- res.render("Profile")
+  const data = await req.user;
+  res.render("Profile", { data: data });
 };
 
 //API FOR MOBILE
@@ -162,5 +163,5 @@ module.exports = {
   getAccount,
   login,
   changePassword,
-  profile
+  profile,
 };
