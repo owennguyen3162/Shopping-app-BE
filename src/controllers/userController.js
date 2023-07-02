@@ -3,11 +3,12 @@ const connect = require("../config/configDB");
 const authMethod = require("../auth/auth.methods");
 const randToken = require("rand-token");
 const jwtVariable = require("../variables/jwt");
+const { URL_FOR_FPL } = require("../variables/Url");
 
 //WEB
 
 const getUSers = async (req, res) => {
-  const query = "SELECT * FROM user";
+  const query = "SELECT * FROM user WHERE role <> 'admin'";
   try {
     const [data] = await connect.execute(query);
     res.render("User", { data });
@@ -17,7 +18,8 @@ const getUSers = async (req, res) => {
 };
 
 const profile = async (req, res) => {
- res.render("Profile")
+  const data = await req.user;
+  res.render("Profile", { data: data });
 };
 
 //API FOR MOBILE
@@ -107,7 +109,7 @@ const getAccount = async (req, res) => {
   try {
     const [data] = await connect.execute(query, [id]);
     const dataNew = data.map((item) => {
-      return { ...item, image: `http://192.168.0.103:3000/${item.image}` };
+      return { ...item, image: `${URL_FOR_FPL}/${item.image}` };
     });
     res.status(200).json({ data: dataNew[0] });
   } catch (error) {
@@ -161,5 +163,5 @@ module.exports = {
   getAccount,
   login,
   changePassword,
-  profile
+  profile,
 };
