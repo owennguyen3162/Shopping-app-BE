@@ -4,6 +4,7 @@ const Home = require("./home.router");
 const User = require("./user.router");
 const Order = require("./order.router");
 const Statistics = require("./statistics");
+const SiteEffect = require("./siteEffect.router");
 
 const route = (app) => {
   app.use("/api", Api);
@@ -12,6 +13,7 @@ const route = (app) => {
   app.use("/user", User);
   app.use("/order", Order);
   app.use("/statistics", Statistics);
+  app.use("/", SiteEffect);
 
 };
 

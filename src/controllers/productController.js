@@ -1,4 +1,5 @@
 const connection = require("../config/configDB");
+const { URL_FOR_FPL } = require("../variables/Url");
 
 //Controller for WEB
 
@@ -32,7 +33,7 @@ const getProductByCategory = async (req, res) => {
   try {
     const [data] = await connection.execute(query, [category]);
     const dataNew = data.map((item) => {
-      return { ...item, image: "http://192.168.0.103:3000/" + item.image };
+      return { ...item, image: URL_FOR_FPL+"/" + item.image };
     });
     return res.status(200).json({ data: dataNew });
   } catch (error) {
@@ -125,7 +126,7 @@ const getNewArrivals = async (req, res) => {
     const [data] = await connection.execute(query);
     if (data.length !== 0) {
       const dataNew = data.map((item) => {
-        return { ...item, image: "http://192.168.0.103:3000/" + item.image };
+        return { ...item, image: URL_FOR_FPL+"/" + item.image };
       });
       return res.status(200).json({ data: dataNew });
     } else {
@@ -134,7 +135,7 @@ const getNewArrivals = async (req, res) => {
       const [data] = await connection.execute(query);
       if (data.length !== 0) {
         const dataNew = data.map((item) => {
-          return { ...item, image: "http://192.168.0.103:3000/" + item.image };
+          return { ...item, image: URL_FOR_FPL+"/" + item.image };
         });
         return res.status(200).json({ data: dataNew });
       }
@@ -149,7 +150,7 @@ const getBestSelling = async (req, res) => {
   try {
     const [data] = await connection.execute(query);
     const dataNew = data.map((item) => {
-      return { ...item, image: "http://192.168.0.103:3000/" + item.image };
+      return { ...item, image: URL_FOR_FPL+"/" + item.image };
     });
     return res.status(200).json({ data: dataNew });
   } catch (error) {
