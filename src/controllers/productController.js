@@ -131,7 +131,7 @@ const getNewArrivals = async (req, res) => {
       return res.status(200).json({ data: dataNew });
     } else {
       const query =
-        "SELECT * FROM product WHERE time > date_sub(now(), interval 1 month)"; // lay cac san pham duoc tao 1 ngay truoc
+        "SELECT * FROM product WHERE time > date_sub(now(), interval 3 month)"; // lay cac san pham duoc tao 1 thang truoc
       const [data] = await connection.execute(query);
       if (data.length !== 0) {
         const dataNew = data.map((item) => {

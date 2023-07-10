@@ -8,7 +8,6 @@ const pushNotification = async (req, res) => {
   const updateStatusOrder = "UPDATE orders SET status = ? where id = ?";
   const updateStatusOrderDone =
     "UPDATE orders SET status = ?, date = ? where id = ?";
-
   const date = new Date();
   const body = `Your order with code ${orderId} has been ${status} at Time ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} Day ${date.getDate()}/${
     date.getMonth() + 1
@@ -88,7 +87,7 @@ const deleteNotification = async (req, res) => {
     await connect.execute(query, [id]);
     return res.status(204).json({ msg: "delete successfully" });
   } catch (error) {
-    return res.status(500).json({ msg: error });
+    return res.status(500).json({ msg: error }); 
   }
 };
 
